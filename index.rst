@@ -77,18 +77,20 @@ This will return information such as:
 
 For any Butler access request:
 
-- If the path starts with ``/u/{username}``, access will be granted and the collection created if the ``username`` attribute of the supplied token matches ``{username}``.
-- If the path starts with ``/g/{group}``, access will be granted if ``{group}`` appears as the ``name`` field of a group in the ``groups`` attribute of the supplied token.
+1. If the path starts with ``/u/{username}``, access will be granted and the collection created if the ``username`` attribute of the supplied token matches ``{username}``.
+2. If the path starts with ``/g/{group}``, access will be granted if ``{group}`` appears as the ``name`` field of a group in the ``groups`` attribute of the supplied token.
 
 If neither of these rules grants access, the Butler will then check whether this collection is associated with an ACL.
 If so, it will perform a third authorization check:
 
-- Take the set intersection of the list of group names from the ``groups`` attribute of the supplied token and the groups in the ACL.
-  If the intersection is non-empty, access is allowed; otherwise, access is denied.
+3. Take the set intersection of the list of group names from the ``groups`` attribute of the supplied token and the groups in the ACL.
+   If the intersection is non-empty, access is allowed; otherwise, access is denied.
 
 If there is no ACL, access is denied.
 
 The Butler will also support an additional API call to set or clear the ACL for a collection.
+This action is authorized using only the first two authorization rules above.
+Members of the ACL cannot change the ACL.
 
 The identity management system will guarantee that every user is also the sole member of a group whose name matches the username.
 (This is desirable anyway for POSIX file system semantics for the Notebook Aspect of the Rubin Science Platform.)
@@ -100,6 +102,11 @@ Variations
 
 Due to the expected use of nested groups of collections, the Butler may want to allow an ACL to be associated with a path prefix or wildcard and not only a single collection.
 This changes the logic for finding an ACL that applies to a given collection, but the rest of the authorization logic is unchanged.
+
+If there is a need to separate read access from write access, each collection can be associated with two ACLs, one controlling read and one controlling write.
+The implicit ownership checks (the first two authorization rules) grant both read and write access.
+The third authorization rule is applied to either the read ACL or the write ACL depending on the operation.
+The API to set or clear the ACL would take an additional parameter specifying whether to act on the read ACL or the write ACL.
 
 Alternatives
 ============
