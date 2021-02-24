@@ -54,12 +54,11 @@ The important semantics are that there are two top-level path patterns, one for 
 This proposal assumes that paths that do not begin with ``/u`` or ``/g`` will be written outside of the Butler service (via direct access to the Butler registry, for example) and will otherwise be public and read-only.
 
 Each collection may optionally be associated with an :abbr:`ACL (Access Control List)`.
-An ACL contains two pieces of data: a boolean flag indicating whether that collection is public, and a list of groups that have access to that collection.
+An ACL contains a list of groups that have access to that collection.
 
 When the Butler receives a user request, it first checks whether the request is to one of the public collections.
 
 1. If the path does not begin with ``/u`` or ``/g``, read access is allowed and write access is denied.
-2. If the collection is associated with an ACL and the public flag is set on the ACL, read access is allowed.
 
 If no access control decision is yet made, the Butler service then uses the associated token to obtain metadata about the user by making a call to the ``/auth/api/v1/user-info`` endpoint (see SQR-049_).
 This will return information such as:
@@ -92,21 +91,21 @@ Consider using a shorter cache timeout if the result of the authorization check 
 
 It then makes two more checks:
 
-3. If the path starts with ``/u/{username}``, access will be granted and the collection created if the ``username`` attribute of the supplied token matches ``{username}``.
-4. If the path starts with ``/g/{group}``, access will be granted if ``{group}`` appears as the ``name`` field of a group in the ``groups`` attribute of the supplied token.
+2. If the path starts with ``/u/{username}``, access will be granted and the collection created if the ``username`` attribute of the supplied token matches ``{username}``.
+3. If the path starts with ``/g/{group}``, access will be granted if ``{group}`` appears as the ``name`` field of a group in the ``groups`` attribute of the supplied token.
 
 If neither of these rules grants access, the Butler will then check the ACL again:
 
-5. Take the set intersection of the list of group names from the ``groups`` attribute of the supplied token and the groups in the ACL.
+4. Take the set intersection of the list of group names from the ``groups`` attribute of the supplied token and the groups in the ACL.
    If the intersection is non-empty, access is allowed; otherwise, access is denied.
    (GIDs should be used instead of group names, but the necessary API is not yet available in the identity management system.
    See ref:`future-work`.)
 
 If there is no ACL, access is denied.
 
-The Butler will also support an additional API call to set or modify the ACL for a collection (either the public flag or the list of groups).
-This action is authorized using only authorization rules 3 and 4 (the rules based on the path structure).
-In other words, only the user or group who owns the collection because the collection is in their data area can change the ACL.
+The Butler will also support an additional API call to set or modify the ACL for a collection.
+This action is authorized using only authorization rules 2 and 3 (the rules based on the path structure).
+In other words, only the user or group who owns the collection, because the collection is in their data area, can change the ACL.
 Members of the ACL cannot change the ACL.
 (Administrators of the Butler can of course bypass this and make ACL changes directly if necessary.)
 
@@ -132,6 +131,10 @@ Alternately, implementation of this proposal could be delayed until the new grou
 Variations
 ----------
 
+This approach assumes that all collections outside of the ``/u`` and ``/g`` paths are public.
+If there is a later need to restrict access to collections outside of the user or group namespaces based on group membership or other user metadata, that can be handled with expanding ACL checks to other paths.
+In this case, caching of group data will become more important to prevent hammering the identity management system with API calls for heavily-used collections.
+
 Due to the expected use of nested groups of collections, the Butler may want to allow an ACL to be associated with a path prefix or wildcard and not only a single collection.
 This changes the logic for finding an ACL that applies to a given collection, but the rest of the authorization logic is unchanged.
 
@@ -139,6 +142,11 @@ If there is a need to separate read access from write access in ACLs, each colle
 The implicit ownership checks (the first two authorization rules) grant both read and write access.
 The third authorization rule is applied to either the read ACL or the write ACL depending on the operation.
 The API to set or clear the ACL would take an additional parameter specifying whether to act on the read ACL or the write ACL.
+
+If there are high-volume public collections inside the user or group namespaces, the ACL could be expanded to support a public flag which, if set, grants read access to all authenticated users.
+This would allow short-cutting authorization decisions for those collections before having to make a call to the identity management system.
+However, this adds additional complexity, including two ways to specify the same thing (setting the public flag and adding the all-users group to a read ACL), so is probably best avoided unless the volume warrants it.
+The most important collections to exclude from identity management calls are the large, high-volume public collections like data releases, and those are not expected to be in the user or group namespaces.
 
 Alternatives
 ============
