@@ -37,14 +37,17 @@ authors:
 copyright: "2021, Association of Universities for Research in Astronomy, Inc. (AURA)"
 
 # Description. A short, 1-2 sentence statemement used by document indices.
-description: "Proposes an approach to implementing authorization controls for the Butler and discusses rejected alternatives."
+description: >
+  Proposes an approach to implementing authorization controls for the
+  Butler and discusses rejected alternatives.
 
-# Abstract, if available
-# abstract: >
-#           Write your paragraph
-#           here with multiple lines.
-#
-#           You can have multiple paragraphs too.
+abstract: >
+  Given the authentication implementation described in DMTN-169, Butler
+  then has to decide whether to permit an operation on a collection
+  following requirement DMS-REQ-0340 in LSE-61.  This document proposes
+  having the Butler service maintain a list of groups and do a group
+  membership check of the requesting user.  Other options and their
+  trade-offs are also discussed.
 
 # URL where this document is published by Read the Docs. e.g. http://sqr-001.lsst.codes
 url: "https://dmtn-182.lsst.io"
