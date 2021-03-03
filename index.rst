@@ -19,12 +19,19 @@ DMS-REQ-0340 states:
 
     All Level 3 data products shall be configured to have the ability to have access restricted to the owner, a list of people, a named group, or be completely public.
 
-In addition, some collections will be public and read-only, such as data releases.
+Per LPM-231_, "Level 3" here refers to User Generated data products.
+The Butler service will also serve Data Release data products.
+Those will be public and read-only.
+
+.. _LPM-231: https://docushare.lsst.org/docushare/dsweb/Get/LPM-231
 
 A local Butler instance does not impose any access control and instead relies on the underlying file system permissions.
 However, the Butler service as described in DMTN-169_ will receive authenticated requests from users and must decide whether to allow an operation while meeting the DMS-REQ-0340 requirement.
 
 The Butler organizes data into collections, which support read and write operations.
+All Butler operations are done on collections.
+Controlling access to collections therefore is sufficient to control access to data served by the Butler service.
+
 Collections are organized hierarchically as paths.
 The current plan is to have the Butler service support two user-writable path structures in addition to common data products: one with a top-level directory per user, and one for collaborations where the top-level directory corresponds to a group.
 However, within those paths, the owners of that portion of the Butler namespace may choose to grant access to some collections to other users or groups.
@@ -86,8 +93,10 @@ This will return information such as:
    }
 
 The Butler service may (and generally should) cache this information for a given token.
-The cache should have a maximum lifetime of an hour.
+The cache should have a maximum lifetime of 30 minutes per LSE-279_, which says that it must be possible to revoke access to a user within 30 minutes.
 Consider using a shorter cache timeout if the result of the authorization check is to deny access, since the most likely failure is that a person was just added to a group.
+
+.. _LSE-279: https://docushare.lsst.org/docushare/dsweb/Get/LSE-279
 
 It then makes two more checks:
 
