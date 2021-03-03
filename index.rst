@@ -29,7 +29,7 @@ A local Butler instance does not impose any access control and instead relies on
 However, the Butler service as described in DMTN-169_ will receive authenticated requests from users and must decide whether to allow an operation while meeting the DMS-REQ-0340 requirement.
 
 The Butler organizes data into collections, which support read and write operations.
-All Butler operations are done on collections.
+All Butler data operations are done on collections.
 Controlling access to collections therefore is sufficient to control access to data served by the Butler service.
 
 Collections are organized hierarchically as paths.
