@@ -26,7 +26,7 @@ However, the Butler service as described in DMTN-169_ will receive authenticated
 
 The Butler organizes data into collections, which support read and write operations.
 Collections are organized hierarchically as paths.
-The current plan is to have the Butler service support two main path structures: one with a top-level directory per user, and one for collaborations where the top-level directory corresponds to a group.
+The current plan is to have the Butler service support two user-writable path structures in addition to common data products: one with a top-level directory per user, and one for collaborations where the top-level directory corresponds to a group.
 However, within those paths, the owners of that portion of the Butler namespace may choose to grant access to some collections to other users or groups.
 
 The identity management system for the Rubin Science Platform is responsible for authenticating users and maintaining their group memberships (see SQR-039_ and SQR-044_).
