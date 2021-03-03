@@ -25,7 +25,7 @@ A local Butler instance does not impose any access control and instead relies on
 However, the Butler service as described in DMTN-169_ will receive authenticated requests from users and must decide whether to allow an operation while meeting the DMS-REQ-0340 requirement.
 
 The Butler organizes data into collections, which support read and write operations.
-Collections are organized hierarchically has paths.
+Collections are organized hierarchically as paths.
 The current plan is to have the Butler service support two main path structures: one with a top-level directory per user, and one for collaborations where the top-level directory corresponds to a group.
 However, within those paths, the owners of that portion of the Butler namespace may choose to grant access to some collections to other users or groups.
 
