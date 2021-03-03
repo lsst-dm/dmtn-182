@@ -53,7 +53,7 @@ The important semantics are that there are two top-level path patterns, one for 
 
 This proposal assumes that paths that do not begin with ``/u`` or ``/g`` will be written outside of the Butler service (via direct access to the Butler registry, for example) and will otherwise be public and read-only.
 
-Each collection may optionally be associated with an :abbr:`ACL (Access Control List)`.
+Each collection may optionally be associated in the Butler registry with an :abbr:`ACL (Access Control List)`.
 An ACL contains a list of groups that have access to that collection.
 
 When the Butler receives a user request, it first checks whether the request is to one of the public collections.
