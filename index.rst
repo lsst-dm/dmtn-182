@@ -94,7 +94,7 @@ It then makes two more checks:
 2. If the path starts with ``/u/{username}``, access will be granted and the collection created if the ``username`` attribute of the supplied token matches ``{username}``.
 3. If the path starts with ``/g/{group}``, access will be granted if ``{group}`` appears as the ``name`` field of a group in the ``groups`` attribute of the supplied token.
 
-If neither of these rules grants access, the Butler will then check the ACL again:
+If neither of these rules grants access, the Butler will then check the ACL:
 
 4. Take the set intersection of the list of group names from the ``groups`` attribute of the supplied token and the groups in the ACL.
    If the intersection is non-empty, access is allowed; otherwise, access is denied.
