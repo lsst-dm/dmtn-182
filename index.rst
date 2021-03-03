@@ -112,6 +112,8 @@ Members of the ACL cannot change the ACL.
 The identity management system will guarantee that every user is also the sole member of a group whose name matches the username.
 (This is desirable anyway for POSIX file system semantics for the Notebook Aspect of the Rubin Science Platform.)
 Therefore, to grant a specific user access to a collection, the username of the user can be added to the ACL alongside any other group.
+In addition, every user is a member of a single group representing all authorized users.
+A collection can then be made public by adding this group to the ACL.
 This satisfies the DMS-REQ-0340 requirement.
 
 .. _future-work:
