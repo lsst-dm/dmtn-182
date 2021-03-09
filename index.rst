@@ -191,7 +191,7 @@ If a user wishes to grant access to a collection to a set of people who are not 
 
 Advantages:
 
-- Simplifies group semenatics.
+- Simplifies group semantics.
   All groups are managed groups, and there are no synthesized, artificial groups whose membership cannot be changed.
 - Avoids user frustration when they add multiple people to multiple collections for a given project and then later discover there is no easy way to add or remove a given person to all of the relevant collections.
 
